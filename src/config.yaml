@@ -1,0 +1,8 @@
+bot_token: ""
+chat_ids:
+  -
+login_url: ""
+uci: ""
+password: ""
+webdriver_path: ""
+
