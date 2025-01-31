@@ -1,8 +1,7 @@
 bot_token: ""
 chat_ids:
-  -
-login_url: ""
+login_url: "https://ircc-tracker-suivi.apps.cic.gc.ca/en/login"
+processing_time_url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html"
 uci: ""
 password: ""
 webdriver_path: ""
-
