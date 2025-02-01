@@ -1,2 +1,68 @@
-# created by virtualenv automatically
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
+# Virtual environment
+venv/
+.env/
+.venv/
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Package directories
+build/
+dist/
+*.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+*.iml
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test coverage reports
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# MyPy type checking cache
+.mypy_cache/
+
+# pytest cache
+.pytest_cache/
+
+# Linter artifacts
+.pylint.d/
+ruff_cache/
+
+# AWS SAM & CloudFormation files
+.aws-sam/
+
+# Docker related
+*.dockerfile
+docker-compose.override.yml
+
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Security and environment files
+.env
+*.key
+*.pem
+*.crt
