@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "ircc_pr_tracker"
+version = "0.1.0"
+description = "A Python script to track PR application status and send updates via Telegram."
+authors = ["Volodymyr"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+selenium = "4.25.0"
+requests = "2.32.3"
+pyyaml = "6.0.2"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.0"
+flake8 = "^5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
