@@ -1,6 +1,6 @@
 # Backlog
 
-## [v 0.1] [0/0]
+## [v 0.1] [0/0] "sync"
 
 - [ ] **Bug**: Fix chat ID null check
 - [ ] **Feature**: Renaming ChoosePrimaryApplicant -> 
@@ -12,6 +12,9 @@
 - [ ] **Feature**: Add different types of reports:
     - [ ] Email reports
 - [ ] **Technical**: Remove branch
+
+## [v 0.2] - "light pr check " 
+## [v 0.3] - "how to people without strong technical backgrounds get value " 
 
 ## [Next Priority v-s]
 
@@ -35,6 +38,7 @@
 
 - [ ] **Feature**: Make your Canadian personal cabinet
 - [ ] **Feature**: Travel.gc.ca
+- [ ] **Feature**: ukrainian passport tracker
 - [ ] **Infrastructure**: Grafana
 
 ## [Scalability]
