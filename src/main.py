@@ -5,10 +5,10 @@ import yaml
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
@@ -17,9 +17,13 @@ with open("./config.yaml", "r") as file:
     config = yaml.safe_load(file)
 
 options = Options()
-options.headless = True
+options.add_argument("--headless")  # Run Chrome in headless mode
+options.add_argument("--no-sandbox")  # Required in Docker
+options.add_argument("--disable-dev-shm-usage")  # Prevents memory issues in Docker
+options.add_argument("--disable-gpu")  # (Not needed for headless, but good practice)
+options.add_argument("--remote-debugging-port=9222")  # Helps with debugging in Docker
 
-driver = webdriver.Firefox(service=Service(config["webdriver_path"]), options=options)
+driver = webdriver.Chrome(service=Service(config["webdriver_path"]), options=options)
 driver.get(config["login_url"])
 
 
