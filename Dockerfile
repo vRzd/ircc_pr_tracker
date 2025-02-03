@@ -14,7 +14,6 @@ RUN poetry install --no-root --no-dev
 
 # Copy the source code
 COPY src/ src/
-COPY config.yaml ./
 
 # Set environment variables (Modify if needed)
 ENV PYTHONUNBUFFERED=1
