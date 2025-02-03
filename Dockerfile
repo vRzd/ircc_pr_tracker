@@ -4,18 +4,22 @@ FROM python:3.8-slim
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy Poetry config files first to leverage Docker caching
 COPY pyproject.toml poetry.lock ./
 
 # Install Poetry
 RUN pip install --no-cache-dir poetry
 
-# Install dependencies
+# Disable virtual environments in Poetry
+RUN poetry config virtualenvs.create false
+
+# Install dependencies inside the container
 RUN poetry install --no-root --no-dev
 
 # Copy the source code
 COPY src/ src/
 
-# Set environment variables (Modify if needed)
+# Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV POETRY_VIRTUALENVS_CREATE=false
 

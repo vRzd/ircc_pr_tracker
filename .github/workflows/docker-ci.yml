@@ -30,11 +30,14 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-root
 
-      - name: Verify PyYAML Installation
-        run: poetry run python -c "import yaml; print('✅ PyYAML is installed!')"
+      - name: Verify PyYAML Installation in GHA
+        run: poetry run python -c "import yaml; print('✅ PyYAML is installed in GitHub Actions!')"
 
       - name: Build Docker image
         run: docker build -t ircc-pr-tracker .
+
+      - name: Verify PyYAML Installation Inside Docker
+        run: docker run --rm ircc-pr-tracker python -c "import yaml; print('✅ PyYAML is installed inside Docker!')"
 
       - name: Run container (dry run)
         run: docker run --rm ircc-pr-tracker
