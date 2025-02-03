@@ -1,0 +1,42 @@
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install dependencies
+        run: poetry install --no-root --no-dev
+
+      - name: Lint with flake8
+        run: poetry run flake8 src/
+
+      - name: Build Docker image
+        run: docker build -t ircc-pr-tracker .
+
+      - name: Run container (dry run)
+        run: docker run --rm ircc-pr-tracker
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_IDS: ${{ secrets.CHAT_IDS }}
+          UCI: ${{ secrets.UCI }}
+          PASSWORD: ${{ secrets.PASSWORD }}
