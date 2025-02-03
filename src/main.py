@@ -1,14 +1,15 @@
 import os
 
-import requests
 import yaml
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.firefox.options import Options
+
+from telegram_client import TelegramClient
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_dir)
@@ -22,15 +23,7 @@ options.headless = True
 driver = webdriver.Firefox(service=Service(config["webdriver_path"]), options=options)
 driver.get(config["login_url"])
 
-
-def send_telegram_message(chat_id, message, parse_mode="Markdown"):
-    url = f"https://api.telegram.org/bot{config['bot_token']}/sendMessage"
-    payload = {"chat_id": chat_id, "text": message, "parse_mode": parse_mode}
-    response = requests.post(url, data=payload)
-    if response.status_code == 200:
-        print("Message sent successfully to", chat_id)
-    else:
-        print(f"Failed to send message to {chat_id}: {response.status_code} - {response.text}")
+telegram_client = TelegramClient(config["bot_token"])
 
 
 def login():
@@ -64,7 +57,7 @@ def get_task_count():
     return current_task_count
 
 
-def choosePrimaryApplicatnt():
+def choose_primary_applicant():
     primary_applicant_app_link = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CLASS_NAME, "full-app-link")))
     primary_applicant_app_link.click()
@@ -137,26 +130,38 @@ def generate_client_message(task_count, last_activity_status, processing_time):
     client_message += last_activity_status
     client_message += processing_time
     print("Final message:", client_message)
-    return  client_message
+    return client_message
 
 
-def send_message_to_recipients():
-    for chat_id in config["chat_ids"]:
-        send_telegram_message(chat_id, f"*OINP status*:\n{client_message}")
+def send_message_to_recipients(client_message):
+    chat_ids = config.get("chat_ids")
 
-try:
-    login()
+    if not chat_ids:
+        print("No chat IDs found in 'config.yaml'. No messages will be sent.")
+        return
 
-    task_count = get_task_count()
-    choosePrimaryApplicatnt()
-    last_activity_status = get_activity_status()
-    processing_time = get_processing_time()
-    client_message = generate_client_message(task_count, last_activity_status, processing_time)
-    send_message_to_recipients()
+    for chat_id in chat_ids:
+        telegram_client.send_message(chat_id, f"*OINP status*:\n{client_message}")
 
 
-except Exception as e:
-    print("An error occurred:", e)
+def main():
+    try:
+        login()
 
-finally:
-    driver.quit()
+        task_count = get_task_count()
+        choose_primary_applicant()
+        last_activity_status = get_activity_status()
+        processing_time = get_processing_time()
+        client_message = generate_client_message(task_count, last_activity_status, processing_time)
+        send_message_to_recipients(client_message)
+
+
+    except Exception as e:
+        print("An error occurred:", e)
+
+    finally:
+        driver.quit()
+
+
+if __name__ == "__main__":
+    main()
