@@ -1,6 +1,7 @@
-from src.logger import logger
+from ..logger import logger
+from ..webdriver_manager import WebDriverManager
 from selenium.webdriver.common.by import By
-from src.webdriver_manager import WebDriverManager
+
 
 
 class TaskPage:

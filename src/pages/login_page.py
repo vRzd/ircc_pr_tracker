@@ -1,7 +1,7 @@
-from src.logger import logger
+from ..logger import logger
+from ..webdriver_manager import WebDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from src.webdriver_manager import WebDriverManager
 
 
 class LoginPage:
