@@ -33,7 +33,7 @@ jobs:
       - name: Install Google Chrome & Chromedriver (Linux)
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip curl gnupg2 libnss3 libgconf-2-4 libxss1 libappindicator3-1 xdg-utils libgbm1 libasound2
+          sudo apt-get install -y wget unzip curl gnupg2 libnss3 libxss1 libappindicator3-1 xdg-utils libgbm1 libasound2t64
           sudo apt-get install -y google-chrome-stable
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1)
           CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
