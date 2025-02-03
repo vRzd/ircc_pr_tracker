@@ -16,6 +16,9 @@ RUN poetry config virtualenvs.create false
 # Install dependencies inside the container
 RUN poetry install --no-root --no-dev
 
+# Set Python path to include /app/src
+ENV PYTHONPATH="/app/src"
+
 # Copy the source code
 COPY src/ src/
 
