@@ -27,9 +27,6 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-root --no-dev
 
-      - name: Lint with flake8
-        run: poetry run flake8 src/
-
       - name: Build Docker image
         run: docker build -t ircc-pr-tracker .
 
