@@ -1,5 +1,5 @@
 from selenium import webdriver
-from logger import logger
+from src.logger import logger
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By

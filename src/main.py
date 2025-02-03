@@ -1,10 +1,10 @@
 import yaml
-from logger import logger
-from webdriver_manager import WebDriverManager
-from telegram_notifier import TelegramNotifier
-from pages.login_page import LoginPage
-from pages.task_page import TaskPage
-from pages.processing_time_page import ProcessingTimePage
+from src.logger import logger
+from src.webdriver_manager import WebDriverManager
+from src.telegram_notifier import TelegramNotifier
+from src.pages.login_page import LoginPage
+from src.pages.task_page import TaskPage
+from src.pages.processing_time_page import ProcessingTimePage
 
 
 class IRCCStatusChecker:
