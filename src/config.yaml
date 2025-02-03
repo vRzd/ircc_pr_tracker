@@ -5,3 +5,7 @@ processing_time_url: "https://www.canada.ca/en/immigration-refugees-citizenship/
 uci: ""
 password: ""
 webdriver_path: ""
+features:
+  check_processing_time: true
+  check_task_count: false
+  report_to_telegram: false
