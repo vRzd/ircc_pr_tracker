@@ -1,10 +1,12 @@
+import os
+import platform
 from selenium import webdriver
-from src.logger import logger
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from src.logger import logger
 
 
 class WebDriverManager:
@@ -27,7 +29,20 @@ class WebDriverManager:
                 "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
             )
 
-            self.driver = webdriver.Chrome(service=Service(), options=options)
+            # Detect OS and set Chromedriver path
+            system = platform.system()
+            if system == "Windows":
+                chromedriver_path = "chromedriver.exe"
+            elif system == "Darwin":  # macOS
+                chromedriver_path = "/usr/local/bin/chromedriver"
+            else:  # Linux (GitHub Actions/Docker)
+                chromedriver_path = "/usr/local/bin/chromedriver"
+
+            if not os.path.exists(chromedriver_path):
+                logger.error(f"Chromedriver not found at {chromedriver_path}")
+                raise FileNotFoundError(f"Chromedriver not found at {chromedriver_path}")
+
+            self.driver = webdriver.Chrome(service=Service(chromedriver_path), options=options)
         return self.driver
 
     def open_url(self, url):
