@@ -21,6 +21,7 @@ ENV PYTHONPATH="/app"
 
 # Copy the source code
 COPY src/ src/
+COPY src/config.yaml src/config.yaml
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
