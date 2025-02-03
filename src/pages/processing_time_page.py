@@ -1,4 +1,4 @@
-from ..logger import logger
+from src.logger import logger
 from selenium.webdriver.common.by import By
 
 
