@@ -27,4 +27,4 @@ ENV PYTHONUNBUFFERED=1
 ENV POETRY_VIRTUALENVS_CREATE=false
 
 # Run the script
-CMD ["python", "-c", "import sys; print(sys.path); import src.logger"]
+CMD ["python", "src/main.py"]
