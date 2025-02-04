@@ -17,16 +17,20 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
     && apt-get install -y google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Chromedriver (Ensure Version Matches Chrome)
+# Extract Chrome version safely
 RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1) && \
+    echo "Detected Chrome Version: $CHROME_VERSION" && \
+    if [ -z "$CHROME_VERSION" ]; then echo "❌ Failed to get Chrome version!" && exit 1; fi && \
     CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION) && \
+    echo "Downloading Chromedriver Version: $CHROMEDRIVER_VERSION" && \
     wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     rm /tmp/chromedriver.zip && \
     chmod +x /usr/local/bin/chromedriver
 
 # Debug: Verify Chrome & Chromedriver installation
-RUN which google-chrome && which chromedriver
+RUN which google-chrome && google-chrome --version
+RUN which chromedriver && chromedriver --version
 
 # Copy Poetry config files first
 COPY pyproject.toml poetry.lock ./
