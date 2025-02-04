@@ -17,21 +17,17 @@ class WebDriverManager:
         if not self.driver:
             options = Options()
             if self.headless:
-                options.add_argument("--headless=new")  # Use new headless mode for better compatibility
-                options.add_argument("--disable-gpu")
+                options.add_argument("--headless")
                 options.add_argument("--no-sandbox")
                 options.add_argument("--disable-dev-shm-usage")
-                options.add_argument("--disable-blink-features=AutomationControlled")
-                options.add_argument("--disable-background-timer-throttling")  # Prevents JS throttling
-                options.add_argument("--disable-backgrounding-occluded-windows")  # Ensures page stays active
-                options.add_argument("--disable-renderer-backgrounding")  # Forces active rendering
-                options.add_argument("--window-size=1920,1080")
+                options.add_argument("--disable-gpu")
                 options.add_argument("--remote-debugging-port=9222")
+                options.add_argument("--window-size=1920,1080")
+                options.add_argument("--disable-blink-features=AutomationControlled")
                 options.add_argument(
                     "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
                 )
 
-            # Automatically download & manage Chromedriver
             self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         return self.driver
 

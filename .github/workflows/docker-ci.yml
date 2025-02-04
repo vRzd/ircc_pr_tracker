@@ -30,9 +30,6 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-root
 
-      - name: Verify PyYAML Installation in GHA
-        run: poetry run python -c "import yaml; print('✅ PyYAML is installed in GitHub Actions!')"
-
       - name: Build Docker image
         run: docker build -t ircc-pr-tracker .
 
