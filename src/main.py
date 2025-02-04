@@ -1,7 +1,7 @@
 import yaml
 import os
 from src.logger import logger
-from src.webdriver_manager import WebDriverManager
+from src.webdriver_manager_c import WebDriverManager
 from src.telegram_notifier import TelegramNotifier
 from src.pages.login_page import LoginPage
 from src.pages.task_page import TaskPage

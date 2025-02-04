@@ -1,11 +1,10 @@
-import os
-import platform
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager  # Auto-downloads Chromedriver
 from src.logger import logger
 
 
@@ -18,31 +17,22 @@ class WebDriverManager:
         if not self.driver:
             options = Options()
             if self.headless:
-                options.add_argument("--headless")
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-gpu")
-            options.add_argument("--remote-debugging-port=9222")
-            options.add_argument("--window-size=1920,1080")
-            options.add_argument("--disable-blink-features=AutomationControlled")
-            options.add_argument(
-                "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
-            )
+                options.add_argument("--headless=new")  # Use new headless mode for better compatibility
+                options.add_argument("--disable-gpu")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--disable-blink-features=AutomationControlled")
+                options.add_argument("--disable-background-timer-throttling")  # Prevents JS throttling
+                options.add_argument("--disable-backgrounding-occluded-windows")  # Ensures page stays active
+                options.add_argument("--disable-renderer-backgrounding")  # Forces active rendering
+                options.add_argument("--window-size=1920,1080")
+                options.add_argument("--remote-debugging-port=9222")
+                options.add_argument(
+                    "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+                )
 
-            # Detect OS and set Chromedriver path
-            system = platform.system()
-            if system == "Windows":
-                chromedriver_path = "chromedriver.exe"
-            elif system == "Darwin":  # macOS
-                chromedriver_path = "/usr/local/bin/chromedriver"
-            else:  # Linux (GitHub Actions/Docker)
-                chromedriver_path = "/usr/local/bin/chromedriver"
-
-            if not os.path.exists(chromedriver_path):
-                logger.error(f"Chromedriver not found at {chromedriver_path}")
-                raise FileNotFoundError(f"Chromedriver not found at {chromedriver_path}")
-
-            self.driver = webdriver.Chrome(service=Service(chromedriver_path), options=options)
+            # Automatically download & manage Chromedriver
+            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         return self.driver
 
     def open_url(self, url):
