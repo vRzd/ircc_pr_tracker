@@ -8,16 +8,25 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     wget unzip curl gnupg2 \
     libnss3 libxss1 libappindicator3-1 xdg-utils libgbm1 libasound2 \
-    google-chrome-stable \
     && apt-get clean
 
-# Install Chromedriver
+# Install Google Chrome
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | tee -a /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Chromedriver (Ensure Version Matches Chrome)
 RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d'.' -f1) && \
     CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION) && \
     wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip && \
     unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
     rm /tmp/chromedriver.zip && \
     chmod +x /usr/local/bin/chromedriver
+
+# Debug: Verify Chrome & Chromedriver installation
+RUN which google-chrome && which chromedriver
 
 # Copy Poetry config files first
 COPY pyproject.toml poetry.lock ./
@@ -41,9 +50,6 @@ COPY src/config.yaml src/config.yaml
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV POETRY_VIRTUALENVS_CREATE=false
-
-# Debug: Check if Chrome and Chromedriver are installed
-RUN which google-chrome && which chromedriver
 
 # Run the script as a module
 CMD ["python", "-m", "src.main"]
