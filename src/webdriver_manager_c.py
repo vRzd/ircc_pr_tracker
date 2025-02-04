@@ -1,10 +1,11 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager  # Auto-downloads Chromedriver
+from webdriver_manager.chrome import ChromeDriverManager
 from src.logger import logger
 
 
@@ -17,7 +18,7 @@ class WebDriverManager:
         if not self.driver:
             options = Options()
             if self.headless:
-                options.add_argument("--headless")
+                options.add_argument("--headless")  # Ensures better compatibility with new headless mode
                 options.add_argument("--no-sandbox")
                 options.add_argument("--disable-dev-shm-usage")
                 options.add_argument("--disable-gpu")
@@ -28,7 +29,13 @@ class WebDriverManager:
                     "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
                 )
 
-            self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+            # Ensure WebDriverManager downloads the correct Chromedriver version
+            driver_path = ChromeDriverManager().install()
+
+            logger.info(f"Using Chromedriver from: {driver_path}")
+
+            # Launch browser
+            self.driver = webdriver.Chrome(service=Service(driver_path), options=options)
         return self.driver
 
     def open_url(self, url):
@@ -57,8 +64,10 @@ class WebDriverManager:
 
     def select_dropdown_option(self, dropdown_id, option_css, timeout=5):
         dropdown = self.wait_for_element(By.ID, dropdown_id, timeout)
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", dropdown)
         dropdown.click()
         option = self.wait_for_element(By.CSS_SELECTOR, option_css, timeout)
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", option)
         option.click()
 
     def close_driver(self):
