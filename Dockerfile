@@ -1,35 +1,43 @@
-# Use an official Python runtime as a parent image
-FROM python:3.8-slim
+# Use an official Python runtime based on Alpine Linux
+FROM python:3.8-alpine
 
-# Set the working directory in the container
-WORKDIR /app
+# Install system dependencies for Chromium/Chromedriver and building Python packages.
+# You might need additional packages (like git, bash, etc.) depending on your project.
+RUN apk update && apk add --no-cache \
+    chromium \
+    chromium-chromedriver \
+    build-base \
+    libffi-dev \
+    openssl-dev
 
-RUN apk update
-RUN apk add chromium
-RUN apk add chromium-chromedriver
+# Set environment variables so that tools like Selenium know where Chromium is.
+# On Alpine, the Chromium binary is typically installed as either /usr/bin/chromium or /usr/bin/chromium-browser.
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROMEDRIVER_BIN=/usr/bin/chromedriver
 
-# Copy Poetry config files first
-COPY pyproject.toml poetry.lock ./
-
-# Install Poetry
+# Install Poetry using pip
 RUN pip install --no-cache-dir poetry
 
-# Disable virtual environments in Poetry
+# Set the working directory for your application
+WORKDIR /app
+
+# Copy Poetry configuration files into the container
+COPY pyproject.toml poetry.lock ./
+
+# Configure Poetry to install packages globally rather than creating a virtual environment.
 RUN poetry config virtualenvs.create false
 
-# Install dependencies inside the container
+# Install Python dependencies as specified in your pyproject.toml/poetry.lock.
+# The flags below tell Poetry not to install the current package (if present) and to skip dev dependencies.
 RUN poetry install --no-root --no-dev
 
-# Set Python path to include /app (ensures src is recognized as a package)
+# Copy the rest of your application code into the container.
+# Adjust the paths as necessary for your project structure.
+COPY src/ src/
+
+# Optionally set any other environment variables your app may need.
+ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH="/app"
 
-# Copy the source code
-COPY src/ src/
-COPY src/config.yaml src/config.yaml
-
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV POETRY_VIRTUALENVS_CREATE=false
-
-# Run the script as a module
+# Specify the command to run your application.
 CMD ["python", "-m", "src.main"]
