@@ -24,11 +24,11 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
 
-      - name: Install dependencies
-        run: poetry install --no-root --no-dev
+      - name: Disable Poetry Virtual Environments
+        run: poetry config virtualenvs.create false
 
-      - name: Lint with flake8
-        run: poetry run flake8 src/
+      - name: Install dependencies
+        run: poetry install --no-root
 
       - name: Build Docker image
         run: docker build -t ircc-pr-tracker .

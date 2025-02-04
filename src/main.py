@@ -1,14 +1,17 @@
 import yaml
-from logger import logger
-from webdriver_manager import WebDriverManager
-from telegram_notifier import TelegramNotifier
-from pages.login_page import LoginPage
-from pages.task_page import TaskPage
-from pages.processing_time_page import ProcessingTimePage
+import os
+from src.logger import logger
+from src.webdriver_manager_c import WebDriverManager
+from src.telegram_notifier import TelegramNotifier
+from src.pages.login_page import LoginPage
+from src.pages.task_page import TaskPage
+from src.pages.processing_time_page import ProcessingTimePage
 
 
 class IRCCStatusChecker:
-    def __init__(self, config_path="./config.yaml"):
+    def __init__(self, config_path=None):
+        if config_path is None:
+            config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
         self.config = self.load_config(config_path)
         self.driver_manager = WebDriverManager(self.config)
         self.notifier = TelegramNotifier(
