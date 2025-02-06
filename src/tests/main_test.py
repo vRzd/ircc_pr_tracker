@@ -3,12 +3,14 @@ import unittest
 from unittest.mock import patch, MagicMock
 from src.main import IRCCStatusChecker
 
+
 class TestIRCCStatusChecker(unittest.TestCase):
 
     @patch("src.main.yaml.safe_load")
     @patch("src.webdriver_manager_c.WebDriverManager")
     @patch("src.telegram_notifier.TelegramNotifier")
-    def setUp(self, mock_notifier, mock_web_driver, mock_yaml_load):
+    @patch("selenium.webdriver.Chrome")
+    def setUp(self, mock_selenium, mock_notifier, mock_web_driver, mock_yaml_load):
         self.mock_config = {
             "bot_token": "test_token",
             "chat_ids": ["123456"],
@@ -16,7 +18,7 @@ class TestIRCCStatusChecker(unittest.TestCase):
             "processing_time_url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html",
             "uci": "123456789",
             "password": "test_password",
-            "webdriver": {  # Ensure webdriver key is present
+            "webdriver": {
                 "headless": True
             },
             "features": {
@@ -36,7 +38,8 @@ class TestIRCCStatusChecker(unittest.TestCase):
     @patch("src.pages.processing_time_page.ProcessingTimePage")
     @patch("src.pages.task_page.TaskPage")
     @patch("src.pages.login_page.LoginPage")
-    def test_run(self, mock_processing_time_page, mock_task_page, mock_login_page):
+    @patch("selenium.webdriver.Chrome")
+    def test_run(self, mock_selenium, mock_processing_time_page, mock_task_page, mock_login_page):
         mock_login_page = mock_login_page.return_value
         mock_task_page = mock_task_page.return_value
         mock_processing_page = mock_processing_time_page.return_value
@@ -70,6 +73,7 @@ class TestIRCCStatusChecker(unittest.TestCase):
         self.assertEqual(config["bot_token"], "test_token")
         mock_open.assert_called_once_with("dummy_path.yaml", "r")
         mock_yaml_load.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()
