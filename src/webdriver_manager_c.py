@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -16,7 +17,8 @@ class WebDriverManager:
     def get_driver(self):
         if not self.driver:
             options = self._get_chrome_options()
-            driver_path = ChromeDriverManager().install()
+            # driver_path = ChromeDriverManager().install()
+            driver_path = "/Users/vdrozd/.wdm/drivers/chromedriver/mac64/132.0.6834.159/chromedriver-mac-arm64/chromedriver"
             logger.info(f"Using Chromedriver from: {driver_path}")
             self.driver = webdriver.Chrome(service=Service(driver_path), options=options)
         return self.driver
@@ -24,10 +26,10 @@ class WebDriverManager:
     def _get_chrome_options(self):
         options = Options()
         if self.headless:
-            options.add_argument("--headless")
+            # options.add_argument("--headless")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--disable-gpu")
+            # options.add_argument("--disable-gpu")
             options.add_argument("--remote-debugging-port=9222")
             options.add_argument("--window-size=1920,1080")
             options.add_argument("--disable-blink-features=AutomationControlled")
@@ -52,10 +54,14 @@ class WebDriverManager:
         )
 
     def click(self, by, value, timeout=None):
-        timeout = timeout or self._timeout
-        WebDriverWait(self.driver, timeout).until(
-            EC.element_to_be_clickable((by, value))
-        ).click()
+        try:
+            timeout = timeout or self._timeout
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.element_to_be_clickable((by, value)))
+            element.click()
+            logger.debug(f"Clicked element: {value}")
+        except Exception as e:
+            logger.warning(f"Normal click failed for {value}.")
 
     def type(self, by, value, keys, timeout=None):
         timeout = timeout or self._timeout
@@ -75,6 +81,14 @@ class WebDriverManager:
         if self.driver:
             self.driver.quit()
             self.driver = None
+
+    def press_key(self, element_id, key, timeout=None):
+        timeout = timeout or self._timeout
+        try:
+            element = self.wait_for_element(By.ID, element_id, timeout)
+            element.send_keys(key)
+        except (TimeoutException, NoSuchElementException) as e:
+            print(f"Error: Unable to locate element {element_id}. Exception: {e}")
 
     @staticmethod
     def send_keys(element, keys):
