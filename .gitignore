@@ -9,7 +9,6 @@ venv/
 .venv/
 Pipfile
 Pipfile.lock
-poetry.lock
 
 # Package directories
 build/

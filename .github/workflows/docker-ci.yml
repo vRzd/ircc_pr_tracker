@@ -24,11 +24,27 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
 
-      - name: Disable Poetry Virtual Environments
-        run: poetry config virtualenvs.create false
+      - name: Cache Poetry dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.local/share/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
+
 
       - name: Install dependencies
         run: poetry install --no-root
+
+      - name: Run tests
+        run: poetry run pytest
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_IDS: ${{ secrets.CHAT_IDS }}
+          UCI: ${{ secrets.UCI }}
+          PASSWORD: ${{ secrets.PASSWORD }}
 
       - name: Build Docker image
         run: docker build -t ircc-pr-tracker .

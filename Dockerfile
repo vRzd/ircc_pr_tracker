@@ -16,16 +16,19 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
     apt-get update && apt-get install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python packages including poetry, selenium, and webdriver_manager
-RUN pip install --no-cache-dir poetry selenium webdriver_manager
+# Install Poetry
+RUN pip install --no-cache-dir poetry
 
 WORKDIR /app
 
-# Copy Poetry configuration files and install dependencies
+# Copy Poetry configuration files and install dependencies (Optimized for caching)
 COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false && poetry install --no-root --no-dev
 
-# Copy the application source code
+# Copy the application source code after dependencies to leverage layer caching
 COPY src/ src/
+
+# Install Python packages required for runtime
+RUN poetry run pip install --no-cache-dir selenium webdriver_manager
 
 CMD ["python", "-m", "src.main"]
