@@ -15,7 +15,7 @@ class TestIRCCStatusChecker(unittest.TestCase):
     def setUp(self, mock_selenium, mock_notifier, mock_web_driver, mock_yaml_load):
         self.mock_config = {
             "bot_token": "test_token",
-            "chat_ids": ["123456"],
+            "chat_ids": ["1234567"],
             "login_url": "https://ircc-tracker-suivi.apps.cic.gc.ca/en/login",
             "processing_time_url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times.html",
             "uci": "123456789",
