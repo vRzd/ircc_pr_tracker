@@ -15,9 +15,12 @@ class LoginPage:
             self.driver_manager.open_url(self.config["login_url"])
             logger.info(f"Navigating to login page: {self.config['login_url']}")
 
-            self.driver_manager.type(By.ID, "uci", self.config["uci"])
+            self.driver_manager.type(By.ID, "uci", self.config["uci"], )
             self.driver_manager.type(By.ID, "password", self.config["password"])
-            self.driver_manager.type(By.ID, "password", Keys.RETURN)
+
+            self.driver_manager.press_key("password", Keys.RETURN)
+            # password_input.send_keys(Keys.RETURN)
+            # self.driver_manager.click(By.ID, "sign-in-btn", 20)
 
             logger.info("Login successful.")
         except Exception as e:

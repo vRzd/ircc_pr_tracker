@@ -1,6 +1,6 @@
 ## IRCC Status Tracker
 
-**Status:** In Progress
+**ffStatus:** In Progress
 
 ### **Requirements**
 - **Telegram bot**
