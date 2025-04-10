@@ -27,6 +27,14 @@ class TestIRCCStatusChecker(unittest.TestCase):
                 "check_task_count": True,
                 "check_processing_time": True,
                 "report_to_telegram": False
+            },
+            "email": {
+                "enable_email_notifications": True,
+                "smtp_server": "smtp.example.com",
+                "smtp_port": 587,
+                "sender_email": "test@example.com",
+                "sender_password": "password",
+                "recipient_emails": ["recipient@example.com"]
             }
         }
         mock_yaml_load.return_value = self.mock_config
