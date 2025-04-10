@@ -3,6 +3,7 @@ import os
 from src.logger import logger
 from src.webdriver_manager_c import WebDriverManager
 from src.telegram_notifier import TelegramNotifier
+from src.email_notifier import EmailNotifier
 from src.pages.login_page import LoginPage
 from src.pages.task_page import TaskPage
 from src.pages.processing_time_page import ProcessingTimePage
@@ -17,6 +18,15 @@ class IRCCStatusChecker:
         self.notifier = TelegramNotifier(
             self.config["bot_token"], self.config["features"].get("report_to_telegram", False)
         )
+        self.email_notifier = None
+        if self.config["email"].get("enable_email_notifications", False):
+            self.email_notifier = EmailNotifier(
+                smtp_server=self.config["email"]["smtp_server"],
+                smtp_port=self.config["email"]["smtp_port"],
+                sender_email=self.config["email"]["sender_email"],
+                sender_password=self.config["email"]["sender_password"],
+                recipient_emails=self.config["email"]["recipient_emails"],
+            )
         self.pages = {}
         self.initialize_pages()
 
@@ -48,6 +58,9 @@ class IRCCStatusChecker:
 
             if self.config["features"].get("report_to_telegram", False):
                 self.notifier.send_message(self.config.get("chat_ids", []), client_message)
+
+            if self.email_notifier:
+                self.email_notifier.send_email("IRCC Status Update", client_message)
         except Exception as e:
             logger.error("An error occurred:", exc_info=True)
         finally:

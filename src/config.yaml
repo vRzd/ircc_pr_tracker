@@ -10,3 +10,10 @@ features:
   check_processing_time: true
   check_task_count: false
   report_to_telegram: false
+email:
+  smtp_server: ""
+  smtp_port: 587
+  sender_email: ""
+  sender_password: ""
+  recipient_emails: []
+  enable_email_notifications: false
